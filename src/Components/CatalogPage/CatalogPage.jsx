@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import Filters from './Filters';
 import { products as allProducts } from '../../data/products';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaFilter } from 'react-icons/fa';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FaFilter, FaRegHeart, FaHeart } from 'react-icons/fa';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
 const CatalogPage = () => {
   const navigate = useNavigate();
   const query = useQuery();
@@ -22,33 +21,33 @@ const CatalogPage = () => {
     color: '',
     category: ''
   });
-  const [sortValue, setSortValue]         = useState('popular');
+  const [sortValue, setSortValue] = useState('popular');
   const [loading, setLoading] = useState(false);
-  const [favorites, setFavorites] = useState([]);
 
+   // FAVORITES STATE (in‐memory only)
+   const [favorites, setFavorites] = useState([]);
 
-  const initialCount   = 15;
-  const loadMoreCount  = 6; // 2 rows × 3 cols
-  const [visibleCount, setVisibleCount]   = useState(initialCount);
-
+  const initialCount  = 15;
+  const loadMoreCount = 6; // 2 rows × 3 cols
+  const [visibleCount, setVisibleCount] = useState(initialCount);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const handleSortChange = (e) => {
     const value = e.target.value;
     setSortValue(value);
     setLoading(true);
-
     setTimeout(() => {
       let sorted = [...filteredProducts];
       if (value === 'lowToHigh')      sorted.sort((a, b) => a.price - b.price);
       else if (value === 'highToLow') sorted.sort((a, b) => b.price - a.price);
-
       setFilteredProducts(sorted);
       setVisibleCount(initialCount);
       setLoading(false);
     }, 1000);
   };
-   useEffect(() => {
+
+  // Shop‐by‐brand URL param effect
+  useEffect(() => {
     if (brandQuery) {
       const byBrand = allProducts.filter(
         (p) => p.brand.toLowerCase() === brandQuery.toLowerCase()
@@ -56,7 +55,6 @@ const CatalogPage = () => {
       setFilteredProducts(byBrand);
       setInitialFilters(f => ({ ...f, brand: brandQuery }));
       setMobileFiltersOpen(true);
-      // clear param so future sorts / loads don't re‑trigger
       navigate('/catalog', { replace: true });
     }
   }, [brandQuery, navigate]);
@@ -67,7 +65,6 @@ const CatalogPage = () => {
       let result = [...list];
       if (sortValue === 'lowToHigh')      result.sort((a, b) => a.price - b.price);
       else if (sortValue === 'highToLow') result.sort((a, b) => b.price - a.price);
-
       setFilteredProducts(result);
       setVisibleCount(initialCount);
       setMobileFiltersOpen(false);
@@ -76,14 +73,15 @@ const CatalogPage = () => {
   };
 
   const loadMore = () => {
-    setVisibleCount((prev) =>
+    setVisibleCount(prev =>
       Math.min(prev + loadMoreCount, filteredProducts.length)
     );
   };
+
   const toggleFavorite = (id) => {
-    setFavorites((prev) =>
+    setFavorites(prev =>
       prev.includes(id)
-        ? prev.filter((fid) => fid !== id)
+        ? prev.filter(f => f !== id)
         : [...prev, id]
     );
   };
@@ -94,10 +92,7 @@ const CatalogPage = () => {
     <>
       {/* HERO */}
       <section className="relative w-full h-[700px] overflow-hidden mb-8">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay loop muted playsInline
-        >
+        <video className="w-full h-full object-cover" autoPlay loop muted playsInline>
           <source src="/assets/Videos/watchcollection.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-white p-4">
@@ -126,13 +121,15 @@ const CatalogPage = () => {
         {/* MOBILE FILTER BUTTON */}
         <div className="md:hidden flex items-center justify-end mb-4">
           <button
-            onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+            onClick={() => setMobileFiltersOpen(o => !o)}
             className="inline-flex items-center space-x-1 px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 transition"
           >
             <FaFilter />
             <span>Filter</span>
           </button>
         </div>
+
+        {/* MOBILE FILTER PANEL */}
         {mobileFiltersOpen && (
           <div className="md:hidden absolute left-0 right-0 z-50 bg-white border border-gray-200 shadow-lg p-4">
             <Filters
@@ -156,13 +153,11 @@ const CatalogPage = () => {
             </div>
           </aside>
 
-          {/* SORT + GRID WRAPPER */}
+          {/* SORT + GRID */}
           <div className="flex-grow">
             {/* SORT & COUNT */}
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-gray-500">
-                {/* Showing{' '} */}
-                {/* <span className="font-medium">{filteredProducts.length}</span>{' '} */}
                 LUXWATCH
               </p>
               <div className="flex items-center space-x-2">
@@ -182,7 +177,7 @@ const CatalogPage = () => {
               </div>
             </div>
 
-            {/* ACTUAL GRID + LOADING OVERLAY */}
+            {/* GRID + LOADING OVERLAY */}
             <div className="relative">
               {loading && (
                 <div className="absolute inset-0 bg-white/75 flex items-center justify-center z-10">
@@ -190,33 +185,32 @@ const CatalogPage = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-x-6 gap-y-8">
-                {visibleProducts.map((item) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+                {visibleProducts.map(item => (
                   <div
                     key={item.id}
                     className="group relative overflow-hidden border border-transparent hover:border-2 hover:border-gray-600 rounded-lg"
                   >
                     {/* IMAGE */}
-                    <div className="w-full h-[350px] bg-gray-100">
+                    <div className="w-full h-[350px] bg-gray-100 relative">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
-                      {/* FAVORITE HEART BUTTON */}
-              <button
-                onClick={() => toggleFavorite(item.id)}
-                className="absolute top-2 right-2 z-20 p-1 bg-white/75 rounded-full hover:bg-white transition"
-              >
-                {favorites.includes(item.id)
-                  ? <FaHeart className="text-red-500" />
-                  : <FaRegHeart className="text-gray-600" />
-                }
-              </button>
-                      
+
+                      {/* FAVORITE HEART */}
+                      <button
+                        onClick={() => toggleFavorite(item.id)}
+                        className="absolute top-2 right-2 z-20 p-1 bg-white/75 rounded-full hover:bg-white transition"
+                      >
+                        {favorites.includes(item.id)
+                          ? <FaHeart className="text-red-500" />
+                          : <FaRegHeart className="text-gray-600" />}
+                      </button>
                     </div>
 
-                    {/* TEXT DETAILS */}
+                    {/* DETAILS */}
                     <div className="mt-3 px-4 pb-12 pt-4">
                       <h3 className="text-sm font-medium text-gray-800 line-clamp-1 mb-2">
                         {item.name}
@@ -236,8 +230,7 @@ const CatalogPage = () => {
                     {/* SLIDE‑UP VIEW DETAILS */}
                     <div className="
                       absolute bottom-0 left-0 w-full
-                      bg-gray-300 text-gray-700 text-center
-                      py-2
+                      bg-gray-300 text-gray-700 text-center py-2
                       transform translate-y-full
                       group-hover:translate-y-0
                       transition-transform duration-300 ease-out
