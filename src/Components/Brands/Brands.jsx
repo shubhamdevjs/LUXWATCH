@@ -8,7 +8,7 @@ const brands = [
     description: `Known as “the watchmaker’s watchmaker”
 Supplies movements to brands like Patek & AP
 Famous models: Reverso, Master Ultra Thin`,
-    image: '/assets/images/jaeger.jpg', // Ensure this image exists in public/assets/images/
+    image: '/assets/Images/jaeger.jpg', // Ensure this image exists in public/assets/images/
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ Famous models: Reverso, Master Ultra Thin`,
   {
     id: 5,
     name: 'Cartier',
-    image: '/assets/Images/breitling.jpg',
+    image: '/assets/Images/Breitling.jpg',
   },
   {
     id: 6,
