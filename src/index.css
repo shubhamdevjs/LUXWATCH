@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@keyframes slide-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+body {  
+ /* @apply font-serif; */
+}
+/* 
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+} */
+ .hide-scrollbar {
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+ }
+
+ .hide-scrollbar::-webkit-scrollbar {
+   display: none;
+ }
