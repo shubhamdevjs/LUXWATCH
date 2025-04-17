@@ -33,7 +33,7 @@ Famous models: Reverso, Master Ultra Thin`,
   {
     id: 6,
     name: ' Patek Philippe',
-    image: '/assets/Images/patek-philippe-nautilus.jpeg',
+    image: '/assets/Images/fossil.jpg',
   },
 ];
 
