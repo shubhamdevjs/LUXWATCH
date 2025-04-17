@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className="flex-none">
           <Link to="/" className="flex items-center space-x-2">
             <img
-              src="/assets/images/logo.jpg"
+              src="/assets/Images/logo.jpg"
               alt="LuxWatch Logo"
               className="h-12 w-auto"
             />

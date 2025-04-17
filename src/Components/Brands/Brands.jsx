@@ -23,12 +23,12 @@ Famous models: Reverso, Master Ultra Thin`,
   {
     id: 4,
     name: 'Hublot ',
-    image: '/assets/images/hublot.jpg',
+    image: '/assets/Images/hublot.jpg',
   },
   {
     id: 5,
     name: 'Cartier',
-    image: '/assets/images/breitling.jpg',
+    image: '/assets/Images/breitling.jpg',
   },
   {
     id: 6,
